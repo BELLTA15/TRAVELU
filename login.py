@@ -7,6 +7,7 @@ def abrir_conductor():
 
 def abrir_usuario():
     subprocess.Popen(["python3", "InterfazUsuario.py"])
+    
 def abrir_admin():
     subprocess.Popen(["python3", "InterfazAdmin.py"])
 
@@ -27,6 +28,15 @@ def verificar_usuario():
     elif ver_archivo("conductores.txt", email, contrasena):
         print("Bienvenido conductor")
         conductor = True
+        with open("conductores.txt", "r") as archivo:
+            for linea in archivo:
+                datos = linea.strip().split(",")
+                if datos[1] == email and datos[2] == contrasena:
+                    info_conductor = datos[3]+","+datos[0]+","+datos[4]+","+datos[5]
+                    #Guardar x en info.txt
+                    with open("info.txt", "w") as archivo2:
+                        archivo2.write(info_conductor)
+                    break
         abrir_conductor()  # Abrir la interfaz de conductor
     elif ver_archivo("admins.txt", email, contrasena):
         print("Bienvenido admin")
@@ -46,6 +56,12 @@ def ver_archivo(nombre: str, email: str, contrasena: str):
 window = tk.Tk()
 window.title("Inicio de Sesión")
 
+#Imagen carro logo
+img = tk.PhotoImage(file="logo.png")
+img = img.subsample(2)
+label_img = tk.Label(window, image=img)
+label_img.grid(row=0, column=0, columnspan=2, pady=10)
+
 # Establecer el tamaño de la ventana
 window.geometry("300x300")
 
@@ -53,9 +69,9 @@ window.geometry("300x300")
 window.configure(bg='#053B50')
 
 # Crear etiquetas y campos de entrada
-titulo_label = ttk.Label(window, text="Inicio de Sesión", font=("Franklin Gothic Medium Cond", 18), background='#053B50')
-email_label = ttk.Label(window, text="Email:",font=("Corbel",12), background='#053B50')
-contrasena_label = ttk.Label(window, text="Contraseña:",font=("Corbel",12), background='#053B50')
+titulo_label = ttk.Label(window, text="Inicio de Sesión", font=("Franklin Gothic Medium Cond", 18), background='#053B50', foreground='white')
+email_label = ttk.Label(window, text="Email:", font=("Corbel", 12), background='#053B50',foreground='white')
+contrasena_label = ttk.Label(window, text="Contraseña:", font=("Corbel", 12), background='#053B50',foreground='white')
 
 email_entry = ttk.Entry(window)
 contrasena_entry = ttk.Entry(window, show="*", background='#f0f5f5')  # Para ocultar la contraseña
@@ -64,12 +80,12 @@ contrasena_entry = ttk.Entry(window, show="*", background='#f0f5f5')  # Para ocu
 guardar_button = ttk.Button(window, text="Ingresar", command=verificar_usuario)
 
 # Organizar los elementos en la ventana usando GridLayout
-titulo_label.grid(row=0, column=0, columnspan=2, pady=10)
-email_label.grid(row=1, column=0, padx=10, pady=5, sticky="e")
-email_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
-contrasena_label.grid(row=2, column=0, padx=10, pady=5, sticky="e")
-contrasena_entry.grid(row=2, column=1, padx=10, pady=5, sticky="w")
-guardar_button.grid(row=3, column=0, columnspan=2, pady=10)
+titulo_label.grid(row=1, column=0, columnspan=2, pady=10)
+email_label.grid(row=2, column=0, padx=10, pady=5, sticky="w")
+email_entry.grid(row=2, column=1, padx=10, pady=5, sticky="w")
+contrasena_label.grid(row=3, column=0, padx=10, pady=5, sticky="w")
+contrasena_entry.grid(row=3, column=1, padx=10, pady=5, sticky="w")
+guardar_button.grid(row=4, column=0, columnspan=2, pady=10)
 
 # Alinear todos los elementos al centro de la ventana
 for child in window.winfo_children():

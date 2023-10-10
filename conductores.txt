@@ -1,0 +1,3 @@
+luis,ii,ii,ii,spark,123,ii
+sergio,oo,oo,oo,clio,321,oo
+fabian,pp,pp,pp,fortuner,852,pp

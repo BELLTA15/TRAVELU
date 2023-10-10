@@ -1,0 +1,3 @@
+pp,fabian,fortuner,852,Bucaramanga,Giron
+ii,luis,spark,123,Floridablanca,Bucaramanga
+jj,chobi,ferrari,1226,dubai,kuwait
