@@ -1,129 +1,128 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
+from tkinter.simpledialog import askstring
 
-def mostrar_origen(mensaje):
-    label_saludo.config(text=mensaje)
+class ViajeApp:
+    def __init__(self, root):
+        self.root = root
+        root.title("Interfaz Conductor")
+        root.geometry("800x600")
+        root.configure(bg='#F2F2F2')  # Color de fondo más claro
 
-def mostrar_destino(mensaje):   
-    label_mensaje.config(text=mensaje)    
+        self.label_saludo = ttk.Label(root, text="Seleccione donde se encuentra", background='#F2F2F2', font=("Arial", 20), foreground='black')
+        self.label_saludo.pack(pady=10, side=tk.TOP)
 
-#Metodo para guardar la informacion seleccionada con el boton
-def guardar_origen(origen):
-    with open("info.txt", "r+") as archivo2:  # Open in read and write mode
-        contenido = archivo2.read()
-        archivo2.seek(0)  # Move the file pointer to the beginning
-        info_viaje = contenido.strip() + "," + origen
-        archivo2.write(info_viaje)
-        archivo2.truncate()  # Truncate any remaining data
+        self.label_mensaje = ttk.Label(root, text="Seleccione hacia donde va", background='#F2F2F2', font=("Arial", 20), foreground='black')
+        self.label_mensaje.pack(pady=10)
 
-def guardar_destino(destino):
-    # Leer el contenido de "info.txt" y obtener la información
-    with open("info.txt", "r+") as archivo_info:
-        contenido = archivo_info.read()
-        archivo_info.seek(0)  # Move the file pointer to the beginning
-        info_viaje = contenido.strip() + "," + destino
-        archivo_info.write(info_viaje)
-        archivo_info.truncate()  # Truncate any remaining data
-    with open("info.txt", "r") as archivo_info:
-        info_viaje = archivo_info.readline().strip()
-        informacion = info_viaje.split(",")
-        id_viaje = informacion[0].strip()
+        self.opciones_origen = ["Giron", "Floridablanca", "Piedecuesta", "Bucaramanga", "Otra Ciudad"]
+        self.opciones_destino = ["Giron", "Floridablanca", "Piedecuesta", "Bucaramanga", "Otra Ciudad"]
 
-        verificar_viajes(id_viaje,informacion)
+        self.botones_origen = self.create_buttons(self.opciones_origen, "origen")
+        self.botones_destino = self.create_buttons(self.opciones_destino, "destino")
+
+        self.info_origen = ""
+        self.info_destino = ""
+
+        self.button_guardar = ttk.Button(root, text="Guardar Viaje", command=self.guardar_viaje, style="TButton")
+        self.button_guardar.pack(pady=10, side=tk.TOP)
+
+        self.button_reset = ttk.Button(root, text="Resetear Selección", command=self.reset_seleccion, style="TButton")
+        self.button_reset.pack(pady=5, side=tk.TOP)
+
+        self.button_ver_viajes = ttk.Button(root, text="Ver Viajes Guardados", command=self.ver_viajes, style="TButton")
+        self.button_ver_viajes.pack(pady=5, side=tk.TOP)
+
+        self.button_eliminar_viajes = ttk.Button(root, text="Eliminar Viajes", command=self.eliminar_viajes, style="TButton")
+        self.button_eliminar_viajes.pack(pady=5, side=tk.TOP)
+
+        self.button_editar_viaje = ttk.Button(root, text="Editar Viaje", command=self.editar_viaje, style="TButton")
+        self.button_editar_viaje.pack(pady=5, side=tk.TOP)
+
+        self.label_aviso = None
+        self.lista_viajes = []
+
+    def create_buttons(self, opciones, destino_tipo):
+        botones = []
+        for opcion in opciones:
+            boton = ttk.Button(self.root, text=opcion, command=lambda op=opcion, dt=destino_tipo: self.mostrar_mensaje(op, dt))
+            boton.pack(pady=5, side=tk.TOP)
+            botones.append(boton)
+        return botones
+
+    def mostrar_mensaje(self, opcion, destino_tipo):
+        if destino_tipo == "origen":
+            self.label_saludo.config(text=f"Has seleccionado {opcion} {destino_tipo}")
+            self.info_origen = opcion
+        else:
+            self.label_mensaje.config(text=f"Has seleccionado {opcion} {destino_tipo}")
+            self.info_destino = opcion
+
+    def guardar_viaje(self):
+        if self.info_origen and self.info_destino:
+            viaje_info = f"Origen: {self.info_origen}, Destino: {self.info_destino}"
+            with open("viajes.txt", "a") as file:
+                file.write(viaje_info + "\n")
+            self.mostrar_aviso("Viaje Guardado", "El viaje ha sido guardado exitosamente.")
+            self.reset_seleccion()
+        else:
+            self.mostrar_aviso("Error", "Debe seleccionar un origen y destino antes de guardar el viaje")
+
+    def mostrar_aviso(self, titulo, mensaje):
+        messagebox.showinfo(titulo, mensaje)
+
+    def reset_seleccion(self):
+        self.info_origen = ""
+        self.info_destino = ""
+        self.label_saludo.config(text="Seleccione donde se encuentra")
+        self.label_mensaje.config(text="Seleccione hacia donde va")
+
+    def ver_viajes(self):
+        with open("viajes.txt", "r") as file:
+            viajes = file.readlines()
+        if viajes:
+            self.lista_viajes = viajes
+            viajes_str = "\n".join(viajes)
+            self.mostrar_aviso("Viajes Guardados", f"Lista de viajes guardados:\n{viajes_str}")
+        else:
+            self.mostrar_aviso("Sin Viajes", "No hay viajes guardados aún.")
+
+    def eliminar_viajes(self):
+        if self.lista_viajes:
+            with open("viajes.txt", "w") as file:
+                file.write("")
+            self.mostrar_aviso("Viajes Eliminados", "Todos los viajes guardados han sido eliminados.")
+            self.lista_viajes = []
+        else:
+             self.mostrar_aviso("Sin Viajes", "No hay viajes para eliminar.")
     
-def verificar_viajes(id_viaje,informacion):
-    lista_viajes = []
-    with open("viajes.txt", "r") as archivo_viajes:
-        for linea in archivo_viajes:
-            elementos = linea.strip().split(",")
-            lista_viajes.append(elementos)
-    sentinela = False
-    for i in range(len(lista_viajes)):
-        if lista_viajes[i][0] == id_viaje:
-            lista_viajes[i] = informacion
-            sentinela = True
-    if sentinela == False:
-        lista_viajes.append(informacion)
-    with open("viajes.txt", "w") as archivo_viajes:
-        for line in lista_viajes:
-            archivo_viajes.write(",".join(line) + "\n")
-                
-# Crear una función para cada botón que cambie el mensaje de bienvenida
-def mostrar_giron():
-    mostrar_origen("Has seleccionado Giron")
-    origen = "Giron"
-    guardar_origen(origen)
+    def editar_viaje(self):
+        if self.lista_viajes:
+            seleccion = askstring("Editar Viaje", "Ingrese el número de línea del viaje que desea editar:")
+            try:
+                seleccion = int(seleccion)
+                if 1 <= seleccion <= len(self.lista_viajes):
+                    nuevo_valor = askstring("Editar Viaje", "Ingrese el nuevo valor para el viaje:")
+                    if nuevo_valor:
+                        self.lista_viajes[seleccion - 1] = nuevo_valor + "\n"
+                        with open("viajes.txt", "w") as file:
+                            file.writelines(self.lista_viajes)
+                        self.mostrar_aviso("Viaje Editado", "El viaje ha sido editado correctamente.")
+                    else:
+                        self.mostrar_aviso("Error", "El valor ingresado es inválido.")
+                else:
+                    self.mostrar_aviso("Error", "El número de línea ingresado está fuera de rango.")
+            except ValueError:
+                self.mostrar_aviso("Error", "Por favor, ingrese un número válido.")
+        else:
+            self.mostrar_aviso("Sin Viajes", "No hay viajes para editar.")
 
-def mostrar_floridablanca():
-    mostrar_origen("Has seleccionado Floridablanca")
-    origen = "Floridablanca"
-    guardar_origen(origen)
-
-def mostrar_piedecuesta():
-    mostrar_origen("Has seleccionado Piedecuesta")
-    origen = "Piedecuesta"
-    guardar_origen(origen)
-
-def mostrar_bucaramanga():
-    mostrar_origen("Has seleccionado Bucaramanga")
-    origen = "Bucaramanga"
-    guardar_origen(origen)
-
-def mostrar_giron2():
-    mostrar_destino("Has seleccionado Giron")
-    destino = "Giron"
-    guardar_destino(destino)
-
-def mostrar_floridablanca2():
-    mostrar_destino("Has seleccionado Floridablanca")
-    destino = "Floridablanca"
-    guardar_destino(destino)
-
-def mostrar_piedecuesta2():
-    mostrar_destino("Has seleccionado Piedecuesta")
-    destino = "Piedecuesta"
-    guardar_destino(destino)
-
-def mostrar_bucaramanga2():
-    mostrar_destino("Has seleccionado Bucaramanga")
-    destino = "Bucaramanga"
-    guardar_destino(destino)
-
-
-# Crear la ventana principal
-window = tk.Tk()
-window.title("Interfaz Conductor")
-window.geometry("300x300")
-window.configure(bg='#053B50')
-
-# Crear etiqueta de bienvenida
-label_saludo = ttk.Label(window, text="Seleccione donde se encuentra", background='#053B50',font=("Franklin Gothic Medium Cond",18),foreground='white')
-label_saludo.pack(pady=10,side=tk.TOP)
-# Crear botones
-button_giron = ttk.Button(window, text="Giron", command=mostrar_giron)
-button_giron.pack(pady=5,side=tk.TOP)
-button_floridablanca = ttk.Button(window, text="Floridablanca", command=mostrar_floridablanca)
-button_floridablanca.pack(pady=5,side=tk.TOP)
-button_piedecuesta = ttk.Button(window, text="Piedecuesta", command=mostrar_piedecuesta)
-button_piedecuesta.pack(pady=5,side=tk.TOP)
-button_bucaramanga = ttk.Button(window, text="Bucaramanga", command=mostrar_bucaramanga)
-button_bucaramanga.pack(pady=5,side=tk.TOP)
-
-#Crear etiqueda de mensaje en medio de los botones
-label_mensaje = ttk.Label(window, text="Seleccione hacia donde va", background='#053B50',font=("Franklin Gothic Medium Cond",18),foreground='white')
-label_mensaje.pack(pady=10,)
-
-# Crear botones
-button_giron2 = ttk.Button(window, text="Giron", command=mostrar_giron2)
-button_giron2.pack(pady=5)
-button_floridablanca2 = ttk.Button(window, text="Floridablanca", command=mostrar_floridablanca2)
-button_floridablanca2.pack(pady=5)
-button_piedecuesta2 = ttk.Button(window, text="Piedecuesta", command=mostrar_piedecuesta2)
-button_piedecuesta2.pack(pady=5)
-button_bucaramanga2 = ttk.Button(window, text="Bucaramanga", command=mostrar_bucaramanga2)
-button_bucaramanga2.pack(pady=5)
-
-# Iniciar la interfaz gráfica
-window.update()
-window.geometry(f"{window.winfo_reqwidth()}x{window.winfo_reqheight()}")
-window.mainloop()
+if __name__ == "__main__":
+    root = tk.Tk()
+    style = ttk.Style()
+    style.configure("TButton", font=("Arial", 14), padding=10, background='#F2F2F2', foreground='black')
+    app = ViajeApp(root)
+    root.update()
+    root.geometry(f"{root.winfo_reqwidth()}x{root.winfo_reqheight()}")
+    root.mainloop()
