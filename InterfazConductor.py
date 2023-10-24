@@ -12,53 +12,42 @@ def guardar_origen(origen):
     with open("info.txt", "r+") as archivo2:  # Open in read and write mode
         contenido = archivo2.read()
         archivo2.seek(0)  # Move the file pointer to the beginning
-        info_viaje = contenido.strip() + ", " + origen
+        info_viaje = contenido.strip() + "," + origen
         archivo2.write(info_viaje)
         archivo2.truncate()  # Truncate any remaining data
 
 def guardar_destino(destino):
     # Leer el contenido de "info.txt" y obtener la información
+    with open("info.txt", "r+") as archivo_info:
+        contenido = archivo_info.read()
+        archivo_info.seek(0)  # Move the file pointer to the beginning
+        info_viaje = contenido.strip() + "," + destino
+        archivo_info.write(info_viaje)
+        archivo_info.truncate()  # Truncate any remaining data
     with open("info.txt", "r") as archivo_info:
         info_viaje = archivo_info.readline().strip()
         informacion = info_viaje.split(",")
         id_viaje = informacion[0].strip()
-        origen_viaje = informacion[3].strip()
-        destino_viaje = informacion[4].strip()
 
-    # Leer todas las líneas del archivo "viajes.txt" y realizar las modificaciones
+        verificar_viajes(id_viaje,informacion)
+    
+def verificar_viajes(id_viaje,informacion):
+    lista_viajes = []
     with open("viajes.txt", "r") as archivo_viajes:
-        lineas = archivo_viajes.readlines()
-
-    nuevas_lineas = []
-    encontrado = False
-
-    for linea in lineas:
-        partes = linea.strip().split(',')
-        if partes[0].strip() == id_viaje:
-            if partes[3].strip() == origen_viaje and partes[4].strip() == destino_viaje:
-                # Si es el mismo ID y el mismo origen y destino, no se modifica
-                mostrar_aviso()
-                encontrado = True
-                break
-
-        # Si no se encuentra un ID coincidente o un destino diferente, se agrega la línea actual
-        nuevas_lineas.append(linea)
-
-    # Si no se encontró una coincidencia, se agrega la información de "info.txt" a "viajes.txt"
-    if not encontrado:
-        nuevas_lineas.append(info_viaje)
-
-    # Escribir las nuevas líneas en "viajes.txt"
+        for linea in archivo_viajes:
+            elementos = linea.strip().split(",")
+            lista_viajes.append(elementos)
+    sentinela = False
+    for i in range(len(lista_viajes)):
+        if lista_viajes[i][0] == id_viaje:
+            lista_viajes[i] = informacion
+            sentinela = True
+    if sentinela == False:
+        lista_viajes.append(informacion)
     with open("viajes.txt", "w") as archivo_viajes:
-        archivo_viajes.writelines(nuevas_lineas)
-
-
-def mostrar_aviso():
-    aviso = tk.Tk()
-    aviso.title("AVISO")
-    aviso.geometry("400x400")
-    aviso.label_aviso = ttk.Label(aviso, text="Ya existe un viaje con el mismo origen y destino", background='#053B50',font=("Franklin Gothic Medium Cond",18),foreground='white')
-            
+        for line in lista_viajes:
+            archivo_viajes.write(",".join(line) + "\n")
+                
 # Crear una función para cada botón que cambie el mensaje de bienvenida
 def mostrar_giron():
     mostrar_origen("Has seleccionado Giron")
