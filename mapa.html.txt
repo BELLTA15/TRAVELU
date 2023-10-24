@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  ></script>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet.fullscreen@1.6.1/dist/leaflet.fullscreen.css"
+  />
+  <script
+    src="https://unpkg.com/leaflet.fullscreen@1.6.1/dist/Leaflet.fullscreen.js"
+  ></script>
+</head>
+<body>
+  <div id="map" style="height: 100vh;"></div>
+
+  <script>
+    var map = L.map('map').setView([7.12197, -73.12513], 10);
+
+    L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        maxZoom: 19,
+      }
+    ).addTo(map);
+
+    L.control.fullscreen().addTo(map);
+  </script>
+</body>
+</html>
