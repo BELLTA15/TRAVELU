@@ -72,20 +72,26 @@ window.title("Interfaz Usuario")
 window.geometry("700x300")
 window.configure(bg='#053B50')
 
+button_style = ttk.Style()
+button_style.configure("Elegant.TButton", background='#0080FF', foreground='black', font=("Arial", 12, "bold"))
+
+label_style = ttk.Style()
+label_style.configure("Elegant.TLabel", background='#053B50', foreground='white', font=("Helvetica", 14))
+
 # Crear etiqueta de saludo
-label_saludo = ttk.Label(window, text="Seleccione la ruta que desea tomar", background='#053B50', font=("Franklin Gothic Medium Cond", 18), foreground='white')
+label_saludo = ttk.Label(window, text="Seleccione la ruta que desea tomar", style="Elegant.TLabel")
 label_saludo.pack(pady=10)
 
 # Crear botones
-button_giron = ttk.Button(window, text="Giron", command=mostrar_giron)
-button_floridablanca = ttk.Button(window, text="Floridablanca", command=mostrar_floridablanca)
-button_piedecuesta = ttk.Button(window, text="Piedecuesta", command=mostrar_piedecuesta)
-button_bucaramanga = ttk.Button(window, text="Bucaramanga", command=mostrar_bucaramanga)
+button_giron = ttk.Button(window, text="Giron", command=mostrar_giron,style="Elegant.TButton")
+button_floridablanca = ttk.Button(window, text="Floridablanca", command=mostrar_floridablanca,style="Elegant.TButton")
+button_piedecuesta = ttk.Button(window, text="Piedecuesta", command=mostrar_piedecuesta,style="Elegant.TButton")
+button_bucaramanga = ttk.Button(window, text="Bucaramanga", command=mostrar_bucaramanga,style="Elegant.TButton")
 
-button_giron.pack(pady=5, anchor='e', fill='x')
-button_floridablanca.pack(pady=5, anchor='e', fill='x')
-button_piedecuesta.pack(pady=5, anchor='e', fill='x')
-button_bucaramanga.pack(pady=5, anchor='e', fill='x')
+button_giron.pack(pady=5, anchor='center')
+button_floridablanca.pack(pady=5, anchor='center')
+button_piedecuesta.pack(pady=5, anchor='center')
+button_bucaramanga.pack(pady=5, anchor='center')
 
 # Crear Treeview fuera de la función
 columns = ("ID", "Nombre", "Modelo", "Placas", "Origen", "Destino")
@@ -98,12 +104,12 @@ tree.heading("Origen", text="Origen")
 tree.heading("Destino", text="Destino")
 
 # Ajustar el ancho de las columnas
-tree.column("ID", width=100)  # Ancho de la columna Nombre
+tree.column("ID", width=50)  # Ancho de la columna Nombre
 tree.column("Nombre", width=100)  # Ancho de la columna Correo
-tree.column("Modelo", width=100)  # Ancho de la columna ID
-tree.column("Placas", width=100)  # Ancho de la columna Contraseña
-tree.column("Origen", width=100)  # Ancho de la columna Contraseña
-tree.column("Destino", width=100)  # Ancho de la columna Contraseña
+tree.column("Modelo", width=85)  # Ancho de la columna ID
+tree.column("Placas", width=75)  # Ancho de la columna Contraseña
+tree.column("Origen", width=90)  # Ancho de la columna Contraseña
+tree.column("Destino", width=90)  # Ancho de la columna Contraseña
 tree.pack(padx=10, pady=10)
 
 # Iniciar la ventana principal

@@ -89,40 +89,46 @@ def mostrar_bucaramanga2():
     guardar_destino(destino)
 
 
-# Crear la ventana principal
+# Create the main window
 window = tk.Tk()
 window.title("Interfaz Conductor")
-window.geometry("300x300")
+window.geometry("400x400")
 window.configure(bg='#053B50')
 
-# Crear etiqueta de bienvenida
-label_saludo = ttk.Label(window, text="Seleccione donde se encuentra", background='#053B50',font=("Franklin Gothic Medium Cond",18),foreground='white')
-label_saludo.pack(pady=10,side=tk.TOP)
-# Crear botones
-button_giron = ttk.Button(window, text="Giron", command=mostrar_giron)
-button_giron.pack(pady=5,side=tk.TOP)
-button_floridablanca = ttk.Button(window, text="Floridablanca", command=mostrar_floridablanca)
-button_floridablanca.pack(pady=5,side=tk.TOP)
-button_piedecuesta = ttk.Button(window, text="Piedecuesta", command=mostrar_piedecuesta)
-button_piedecuesta.pack(pady=5,side=tk.TOP)
-button_bucaramanga = ttk.Button(window, text="Bucaramanga", command=mostrar_bucaramanga)
-button_bucaramanga.pack(pady=5,side=tk.TOP)
+# Create a custom style for the buttons
+button_style = ttk.Style()
+button_style.configure("Elegant.TButton", background='#0080FF', foreground='black', font=("Arial", 12, "bold"))
 
-#Crear etiqueda de mensaje en medio de los botones
-label_mensaje = ttk.Label(window, text="Seleccione hacia donde va", background='#053B50',font=("Franklin Gothic Medium Cond",18),foreground='white')
-label_mensaje.pack(pady=10,)
+# Create a custom style for the labels
+label_style = ttk.Style()
+label_style.configure("Elegant.TLabel", background='#053B50', foreground='white', font=("Helvetica", 14))
 
-# Crear botones
-button_giron2 = ttk.Button(window, text="Giron", command=mostrar_giron2)
-button_giron2.pack(pady=5)
-button_floridablanca2 = ttk.Button(window, text="Floridablanca", command=mostrar_floridablanca2)
+# Create labels and buttons with updated title colors
+label_saludo = ttk.Label(window, text="Seleccione su ubicación", style="Elegant.TLabel")
+label_saludo.pack(pady=10, side=tk.TOP)
+
+button_giron = ttk.Button(window, text="Girón", command=mostrar_giron, style="Elegant.TButton")
+button_giron.pack(pady=10, side=tk.TOP)
+button_floridablanca = ttk.Button(window, text="Floridablanca", command=mostrar_floridablanca, style="Elegant.TButton")
+button_floridablanca.pack(pady=5, side=tk.TOP)
+button_piedecuesta = ttk.Button(window, text="Piedecuesta", command=mostrar_piedecuesta, style="Elegant.TButton")
+button_piedecuesta.pack(pady=5, side=tk.TOP)
+button_bucaramanga = ttk.Button(window, text="Bucaramanga", command=mostrar_bucaramanga, style="Elegant.TButton")
+button_bucaramanga.pack(pady=5, side=tk.TOP)
+
+label_mensaje = ttk.Label(window, text="Seleccione su destino", style="Elegant.TLabel")
+label_mensaje.pack(pady=10)
+
+button_giron2 = ttk.Button(window, text="Girón", command=mostrar_giron2, style="Elegant.TButton")
+button_giron2.pack(pady=10)
+button_floridablanca2 = ttk.Button(window, text="Floridablanca", command=mostrar_floridablanca2, style="Elegant.TButton")
 button_floridablanca2.pack(pady=5)
-button_piedecuesta2 = ttk.Button(window, text="Piedecuesta", command=mostrar_piedecuesta2)
+button_piedecuesta2 = ttk.Button(window, text="Piedecuesta", command=mostrar_piedecuesta2, style="Elegant.TButton")
 button_piedecuesta2.pack(pady=5)
-button_bucaramanga2 = ttk.Button(window, text="Bucaramanga", command=mostrar_bucaramanga2)
+button_bucaramanga2 = ttk.Button(window, text="Bucaramanga", command=mostrar_bucaramanga2, style="Elegant.TButton")
 button_bucaramanga2.pack(pady=5)
 
-# Iniciar la interfaz gráfica
+# Start the GUI main loop
 window.update()
 window.geometry(f"{window.winfo_reqwidth()}x{window.winfo_reqheight()}")
 window.mainloop()
